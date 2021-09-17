@@ -1,9 +1,10 @@
 import ReactDOM from 'react-dom'
 import { StrictMode } from 'react'
+import { Root } from 'root'
 
 ReactDOM.render(
   <StrictMode>
-    <div />
+    <Root />
   </StrictMode>,
   document.getElementById('root'),
 )
