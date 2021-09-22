@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
+
 import { ReactComponent as Logo } from '../../assets/logo.svg'
 import { ReactComponent as PlusIcon } from '../../assets/plus.svg'
 import { ReactComponent as FileIcon } from '../../assets/file.svg'
@@ -16,43 +19,13 @@ type File = {
   status: 'editing' | 'saving' | 'saved'
 }
 
-const files: File[] = [
-  {
-    id: '1',
-    name: 'README.md',
-    content: 'Readme content',
-    active: false,
-    status: 'saved',
-  },
-  {
-    id: '2',
-    name: 'LICENSE.md',
-    content: 'License content',
-    active: false,
-    status: 'saved',
-  },
-  {
-    id: '3',
-    name: 'links.md',
-    content: 'Links content',
-    active: false,
-    status: 'saved',
-  },
-  {
-    id: '4',
-    name: 'CONTRIBUTING.md',
-    content: 'Contributing content',
-    active: false,
-    status: 'saved',
-  },
-  {
-    id: '5',
-    name: 'roadmap.md',
-    content: 'Roadmap content',
-    active: true,
-    status: 'editing',
-  },
-]
+const initialFile: File = {
+  id: uuidv4(),
+  name: 'Sem título',
+  content: '',
+  active: true,
+  status: 'saved',
+}
 
 const statusIcon = {
   editing: <EditingIcon />,
@@ -61,6 +34,21 @@ const statusIcon = {
 }
 
 function Sidebar () {
+  const [files, setFiles] = useState<File[]>([initialFile])
+
+  const handleAddFile = () => {
+    setFiles(state => [
+      ...state.map(file => ({ ...file, active: false })),
+      {
+        id: uuidv4(),
+        name: 'Sem título',
+        content: '',
+        active: true,
+        status: 'saved',
+      },
+    ])
+  }
+
   return (
     <S.Wrapper>
       <header>
@@ -69,7 +57,7 @@ function Sidebar () {
 
       <S.Title><span>Arquivos</span></S.Title>
 
-      <S.AddFileButton><PlusIcon /> Adicionar arquivo</S.AddFileButton>
+      <S.AddFileButton onClick={handleAddFile}><PlusIcon /> Adicionar arquivo</S.AddFileButton>
 
       <S.FileList>
         {files.map(file => {
