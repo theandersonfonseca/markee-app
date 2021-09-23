@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, RefObject } from 'react'
 import { ReactComponent as FileActiveIcon } from '../../assets/file-active.svg'
 
 import marked from 'marked'
@@ -20,7 +20,11 @@ import('highlight.js').then(hljs => {
   })
 })
 
-function Content () {
+type ContentProps = {
+  inputRef: RefObject<HTMLInputElement>
+}
+
+function Content ({ inputRef }: ContentProps) {
   const [content, setContent] = useState('')
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -31,7 +35,7 @@ function Content () {
     <S.Wrapper>
       <S.InputWrapper>
         <FileActiveIcon />
-        <S.Input type='text' defaultValue='Sem título' />
+        <S.Input type='text' defaultValue='Sem título' ref={inputRef} />
       </S.InputWrapper>
 
       <S.Content>

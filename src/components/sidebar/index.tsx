@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { RefObject, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { ReactComponent as Logo } from '../../assets/logo.svg'
@@ -10,6 +10,10 @@ import { ReactComponent as SavingIcon } from '../../assets/loading.svg'
 import { ReactComponent as SavedIcon } from '../../assets/check.svg'
 
 import * as S from './styles'
+
+type SidebarProps = {
+  inputRef: RefObject<HTMLInputElement>
+}
 
 type File = {
   id: string
@@ -33,10 +37,12 @@ const statusIcon = {
   saved: <SavedIcon />,
 }
 
-function Sidebar () {
+function Sidebar ({ inputRef }: SidebarProps) {
   const [files, setFiles] = useState<File[]>([initialFile])
 
   const handleAddFile = () => {
+    inputRef.current?.focus()
+
     setFiles(state => [
       ...state.map(file => ({ ...file, active: false })),
       {
