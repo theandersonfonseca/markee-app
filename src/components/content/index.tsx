@@ -1,10 +1,12 @@
-import { useState, ChangeEvent, RefObject } from 'react'
+import { useState, RefObject, Dispatch, SetStateAction, useEffect } from 'react'
 import { ReactComponent as FileActiveIcon } from '../../assets/file-active.svg'
 
 import marked from 'marked'
 import 'highlight.js/styles/github.css'
 
 import * as S from './styles'
+
+import { File as FileType } from '../../app'
 
 import('highlight.js').then(hljs => {
   const h = hljs.default
@@ -22,30 +24,47 @@ import('highlight.js').then(hljs => {
 
 type ContentProps = {
   inputRef: RefObject<HTMLInputElement>
+  files: FileType[]
+  setFiles: Dispatch<SetStateAction<FileType[]>>
 }
 
-function Content ({ inputRef }: ContentProps) {
-  const [content, setContent] = useState('')
+function Content ({ inputRef, files, setFiles }: ContentProps) {
+  const [activeFile, setActiveFile] = useState<FileType>(() => files.filter(file => file.active)[0])
 
-  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value)
+  useEffect(() => {
+    setActiveFile(files.filter(file => file.active)[0])
+  }, [files])
+
+  const handleChange = (data: string, prop: 'name' | 'content') => {
+    setFiles(state =>
+      state.map(file => {
+        if (file.id === activeFile.id) {
+          return ({
+            ...activeFile,
+            [prop]: data,
+          })
+        }
+
+        return file
+      }),
+    )
   }
 
   return (
     <S.Wrapper>
       <S.InputWrapper>
         <FileActiveIcon />
-        <S.Input type='text' defaultValue='Sem título' ref={inputRef} />
+        <S.Input type='text' value={activeFile.name} ref={inputRef} onChange={(e) => handleChange(e.target.value, 'name')} />
       </S.InputWrapper>
 
       <S.Content>
         <S.Textarea
           placeholder='Digite aqui seu markdown'
-          value={content}
-          onChange={handleChange}
+          value={activeFile.content}
+          onChange={(e) => handleChange(e.target.value, 'content')}
         />
 
-        <S.Preview dangerouslySetInnerHTML={{ __html: marked(content) }} />
+        <S.Preview dangerouslySetInnerHTML={{ __html: marked(activeFile.content) }} />
       </S.Content>
     </S.Wrapper>
   )

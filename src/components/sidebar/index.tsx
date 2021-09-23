@@ -1,4 +1,4 @@
-import { RefObject, useState } from 'react'
+import { Dispatch, RefObject, SetStateAction } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { ReactComponent as Logo } from '../../assets/logo.svg'
@@ -11,24 +11,12 @@ import { ReactComponent as SavedIcon } from '../../assets/check.svg'
 
 import * as S from './styles'
 
+import { File as FileType } from '../../app'
+
 type SidebarProps = {
   inputRef: RefObject<HTMLInputElement>
-}
-
-type File = {
-  id: string
-  name: string
-  content: string
-  active: boolean
-  status: 'editing' | 'saving' | 'saved'
-}
-
-const initialFile: File = {
-  id: uuidv4(),
-  name: 'Sem título',
-  content: '',
-  active: true,
-  status: 'saved',
+  files: FileType[]
+  setFiles: Dispatch<SetStateAction<FileType[]>>
 }
 
 const statusIcon = {
@@ -37,9 +25,7 @@ const statusIcon = {
   saved: <SavedIcon />,
 }
 
-function Sidebar ({ inputRef }: SidebarProps) {
-  const [files, setFiles] = useState<File[]>([initialFile])
-
+function Sidebar ({ inputRef, files, setFiles }: SidebarProps) {
   const handleAddFile = () => {
     inputRef.current?.focus()
 
