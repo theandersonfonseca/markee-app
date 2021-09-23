@@ -41,6 +41,23 @@ function Sidebar ({ inputRef, files, setFiles }: SidebarProps) {
     ])
   }
 
+  const handleFileSelection = (fileId: string) => {
+    inputRef.current?.focus()
+
+    setFiles(state =>
+      state.map(file => {
+        if (file.id === fileId) {
+          return ({
+            ...file,
+            active: true,
+          })
+        }
+
+        return ({ ...file, active: false })
+      }),
+    )
+  }
+
   return (
     <S.Wrapper>
       <header>
@@ -55,7 +72,7 @@ function Sidebar ({ inputRef, files, setFiles }: SidebarProps) {
         {files.map(file => {
           return (
             <S.FileItem key={file.id} active={file.active}>
-              <S.FileLink href='#'>
+              <S.FileLink href='#' onClick={() => handleFileSelection(file.id)}>
                 {file.active ? <FileActiveIcon /> : <FileIcon />}
 
                 <span>{file.name}</span>
