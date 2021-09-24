@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import localforage from 'localforage'
 
 type FileStatus = 'editing' | 'saving' | 'saved'
 
@@ -22,6 +23,20 @@ const initialFile: File = {
 function useFiles () {
   const inputRef = useRef<HTMLInputElement>(null)
   const [files, setFiles] = useState<File[]>([initialFile])
+
+  useEffect(() => {
+    localforage.setItem('MARKEE_FILES', files)
+  }, [files])
+
+  useEffect(() => {
+    async function getFiles () {
+      const files = await localforage.getItem<File[]>('MARKEE_FILES')
+
+      if (files) setFiles(files)
+    }
+
+    getFiles()
+  }, [])
 
   useEffect(() => {
     const activeFile = files.filter(file => file.active)[0]
