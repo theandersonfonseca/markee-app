@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Dispatch, RefObject, SetStateAction } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { ReactComponent as Logo } from '../../assets/logo.svg'
@@ -11,20 +11,12 @@ import { ReactComponent as SavedIcon } from '../../assets/check.svg'
 
 import * as S from './styles'
 
-type File = {
-  id: string
-  name: string
-  content: string
-  active: boolean
-  status: 'editing' | 'saving' | 'saved'
-}
+import { File as FileType } from '../../app'
 
-const initialFile: File = {
-  id: uuidv4(),
-  name: 'Sem título',
-  content: '',
-  active: true,
-  status: 'saved',
+type SidebarProps = {
+  inputRef: RefObject<HTMLInputElement>
+  files: FileType[]
+  setFiles: Dispatch<SetStateAction<FileType[]>>
 }
 
 const statusIcon = {
@@ -33,10 +25,10 @@ const statusIcon = {
   saved: <SavedIcon />,
 }
 
-function Sidebar () {
-  const [files, setFiles] = useState<File[]>([initialFile])
-
+function Sidebar ({ inputRef, files, setFiles }: SidebarProps) {
   const handleAddFile = () => {
+    inputRef.current?.focus()
+
     setFiles(state => [
       ...state.map(file => ({ ...file, active: false })),
       {
@@ -47,6 +39,27 @@ function Sidebar () {
         status: 'saved',
       },
     ])
+  }
+
+  const handleFileSelection = (fileId: string) => {
+    inputRef.current?.focus()
+
+    setFiles(state =>
+      state.map(file => {
+        if (file.id === fileId) {
+          return ({
+            ...file,
+            active: true,
+          })
+        }
+
+        return ({ ...file, active: false })
+      }),
+    )
+  }
+
+  const handleRemoveFile = (fileId: string) => {
+    setFiles(state => state.filter(file => fileId !== file.id))
   }
 
   return (
@@ -63,13 +76,13 @@ function Sidebar () {
         {files.map(file => {
           return (
             <S.FileItem key={file.id} active={file.active}>
-              <S.FileLink href='#'>
+              <S.FileLink href='#' onClick={() => handleFileSelection(file.id)}>
                 {file.active ? <FileActiveIcon /> : <FileIcon />}
 
                 <span>{file.name}</span>
               </S.FileLink>
 
-              {!file.active && <S.RemoveFileButton aria-label='Remove file'>x</S.RemoveFileButton>}
+              {!file.active && <S.RemoveFileButton aria-label='Remove file' onClick={() => handleRemoveFile(file.id)}>x</S.RemoveFileButton>}
 
               {file.active && <S.FileStatus isSaving={file.status === 'saving'}>{statusIcon[file.status]}</S.FileStatus>}
             </S.FileItem>
