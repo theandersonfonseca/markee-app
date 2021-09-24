@@ -25,6 +25,14 @@ function useFiles () {
   const [files, setFiles] = useState<File[]>([initialFile])
 
   useEffect(() => {
+    const activeFile = files.filter(file => file.active)[0]
+
+    if (activeFile) {
+      window.history.pushState({}, '', `/file/${activeFile.id}`)
+    }
+  }, [files])
+
+  useEffect(() => {
     localforage.setItem('MARKEE_FILES', files)
   }, [files])
 
