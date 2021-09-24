@@ -58,6 +58,10 @@ function Sidebar ({ inputRef, files, setFiles }: SidebarProps) {
     )
   }
 
+  const handleRemoveFile = (fileId: string) => {
+    setFiles(state => state.filter(file => fileId !== file.id))
+  }
+
   return (
     <S.Wrapper>
       <header>
@@ -78,7 +82,7 @@ function Sidebar ({ inputRef, files, setFiles }: SidebarProps) {
                 <span>{file.name}</span>
               </S.FileLink>
 
-              {!file.active && <S.RemoveFileButton aria-label='Remove file'>x</S.RemoveFileButton>}
+              {!file.active && <S.RemoveFileButton aria-label='Remove file' onClick={() => handleRemoveFile(file.id)}>x</S.RemoveFileButton>}
 
               {file.active && <S.FileStatus isSaving={file.status === 'saving'}>{statusIcon[file.status]}</S.FileStatus>}
             </S.FileItem>
