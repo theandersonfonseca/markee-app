@@ -41,6 +41,7 @@ function Content ({ inputRef, files, setFiles }: ContentProps) {
         if (file.id === activeFile.id) {
           return ({
             ...activeFile,
+            status: 'editing',
             [prop]: data,
           })
         }
