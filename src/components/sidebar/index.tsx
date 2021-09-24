@@ -1,6 +1,3 @@
-import { Dispatch, RefObject, SetStateAction } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-
 import { ReactComponent as Logo } from '../../assets/logo.svg'
 import { ReactComponent as PlusIcon } from '../../assets/plus.svg'
 import { ReactComponent as FileIcon } from '../../assets/file.svg'
@@ -11,12 +8,21 @@ import { ReactComponent as SavedIcon } from '../../assets/check.svg'
 
 import * as S from './styles'
 
-import { File as FileType } from '../../app'
+type FileStatus = 'editing' | 'saving' | 'saved'
+
+export type File = {
+  id: string
+  name: string
+  content: string
+  active: boolean
+  status: FileStatus
+}
 
 type SidebarProps = {
-  inputRef: RefObject<HTMLInputElement>
-  files: FileType[]
-  setFiles: Dispatch<SetStateAction<FileType[]>>
+  files: File[]
+  handleAddFile: () => void
+  handleFileSelection: (fileId: string) => void
+  handleRemoveFile: (fileId: string) => void
 }
 
 const statusIcon = {
@@ -25,43 +31,7 @@ const statusIcon = {
   saved: <SavedIcon />,
 }
 
-function Sidebar ({ inputRef, files, setFiles }: SidebarProps) {
-  const handleAddFile = () => {
-    inputRef.current?.focus()
-
-    setFiles(state => [
-      ...state.map(file => ({ ...file, active: false })),
-      {
-        id: uuidv4(),
-        name: 'Sem título',
-        content: '',
-        active: true,
-        status: 'saved',
-      },
-    ])
-  }
-
-  const handleFileSelection = (fileId: string) => {
-    inputRef.current?.focus()
-
-    setFiles(state =>
-      state.map(file => {
-        if (file.id === fileId) {
-          return ({
-            ...file,
-            active: true,
-          })
-        }
-
-        return ({ ...file, active: false })
-      }),
-    )
-  }
-
-  const handleRemoveFile = (fileId: string) => {
-    setFiles(state => state.filter(file => fileId !== file.id))
-  }
-
+function Sidebar ({ files, handleAddFile, handleFileSelection, handleRemoveFile }: SidebarProps) {
   return (
     <S.Wrapper>
       <header>

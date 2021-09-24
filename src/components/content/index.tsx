@@ -1,12 +1,19 @@
-import { useState, RefObject, Dispatch, SetStateAction, useEffect } from 'react'
-import { ReactComponent as FileActiveIcon } from '../../assets/file-active.svg'
-
+import { useState, RefObject, useEffect } from 'react'
 import marked from 'marked'
 import 'highlight.js/styles/github.css'
+import { ReactComponent as FileActiveIcon } from '../../assets/file-active.svg'
 
 import * as S from './styles'
 
-import { File as FileType } from '../../app'
+type FileStatus = 'editing' | 'saving' | 'saved'
+
+export type File = {
+  id: string
+  name: string
+  content: string
+  active: boolean
+  status: FileStatus
+}
 
 import('highlight.js').then(hljs => {
   const h = hljs.default
@@ -24,45 +31,29 @@ import('highlight.js').then(hljs => {
 
 type ContentProps = {
   inputRef: RefObject<HTMLInputElement>
-  files: FileType[]
-  setFiles: Dispatch<SetStateAction<FileType[]>>
+  files: File[]
+  handleFileUpdate: (data: string, prop: 'name' | 'content') => void
 }
 
-function Content ({ inputRef, files, setFiles }: ContentProps) {
-  const [activeFile, setActiveFile] = useState<FileType>(() => files.filter(file => file.active)[0])
+function Content ({ inputRef, files, handleFileUpdate }: ContentProps) {
+  const [activeFile, setActiveFile] = useState<File>(() => files.filter(file => file.active)[0])
 
   useEffect(() => {
     setActiveFile(files.filter(file => file.active)[0])
   }, [files])
 
-  const handleChange = (data: string, prop: 'name' | 'content') => {
-    setFiles(state =>
-      state.map(file => {
-        if (file.id === activeFile.id) {
-          return ({
-            ...activeFile,
-            status: 'editing',
-            [prop]: data,
-          })
-        }
-
-        return file
-      }),
-    )
-  }
-
   return (
     <S.Wrapper>
       <S.InputWrapper>
         <FileActiveIcon />
-        <S.Input type='text' value={activeFile.name} ref={inputRef} onChange={(e) => handleChange(e.target.value, 'name')} />
+        <S.Input type='text' value={activeFile.name} ref={inputRef} onChange={(e) => handleFileUpdate(e.target.value, 'name')} />
       </S.InputWrapper>
 
       <S.Content>
         <S.Textarea
           placeholder='Digite aqui seu markdown'
           value={activeFile.content}
-          onChange={(e) => handleChange(e.target.value, 'content')}
+          onChange={(e) => handleFileUpdate(e.target.value, 'content')}
         />
 
         <S.Preview dangerouslySetInnerHTML={{ __html: marked(activeFile.content) }} />
