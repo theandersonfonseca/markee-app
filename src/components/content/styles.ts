@@ -3,6 +3,20 @@ import styled, { css } from 'styled-components/macro'
 export const Wrapper = styled.main`
   width: 100%;
   padding: 3rem;
+
+  a {
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+  }
 `
 
 export const InputWrapper = styled.div`
@@ -32,6 +46,7 @@ export const Textarea = styled.textarea`
   resize: none;
   border: 0;
   font-size: 1.6rem;
+  font-family: 'Inconsolata', 'Courier New', Courier, monospace;
 
   &:focus {
     outline: none;
@@ -45,6 +60,7 @@ export const Preview = styled.div`
     height: 100%;
     padding: 1.6rem;
     font-size: 1.6rem;
+    word-break: break-word;
 
     &::before {
       content: '';
