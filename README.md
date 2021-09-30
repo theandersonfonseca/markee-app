@@ -2,6 +2,10 @@
   <img src="./public/logo192.png" alt="Logo" width="60px" />
 </div>
 
+![](./github/markee.gif)
+
+---
+
 ## 🛠️ Technologies
 
 - **[TypeScript](https://www.typescriptlang.org/)**
