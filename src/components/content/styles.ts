@@ -14,7 +14,12 @@ export const Wrapper = styled.main`
     width: 100%;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     margin-top: 0;
   }
 `
@@ -37,6 +42,7 @@ export const Input = styled.input`
 export const Content = styled.div`
   display: flex;
   height: calc(100vh - 2.9rem - 6rem);
+  overflow-y: scroll;
 `
 
 export const Textarea = styled.textarea`
@@ -46,7 +52,7 @@ export const Textarea = styled.textarea`
   resize: none;
   border: 0;
   font-size: 1.6rem;
-  font-family: 'Inconsolata', 'Courier New', Courier, monospace;
+  font-family: "Inconsolata", "Courier New", Courier, monospace;
 
   &:focus {
     outline: none;
@@ -63,7 +69,7 @@ export const Preview = styled.div`
     word-break: break-word;
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
